@@ -1,15 +1,14 @@
 package io.conduktor.demo.kafka.wikimedia;
 
 import com.launchdarkly.eventsource.EventSource;
+import com.launchdarkly.eventsource.EventSource.Builder;
 import com.launchdarkly.eventsource.background.BackgroundEventHandler;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerConfig;
-import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.beans.EventHandler;
 import java.net.URI;
 import java.util.Properties;
 
@@ -36,11 +35,11 @@ public class WikimediaChangeProducer {
 
         BackgroundEventHandler eventHandler = new WikimediaChangeHandler();
         String url = "https://stream.wikimedia.org/v2/stream/recentchange";
-        EventSource.Builder builder = new EventSource.Builder(eventHandler, URI.create(url));
+        Builder builder = new Builder(URI.create(url));
         EventSource eventSource = builder.build();
 
         //start the producer in another thread
-        eventSource.start();
+        //eventSource.start();
 
 
     }
