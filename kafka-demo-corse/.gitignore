@@ -1,3 +1,15 @@
+
+
+.idea
+.gradle
+gradle
+
+*.lock
+*.bin
+*.probe
+*.iml
+
+
 # Compiled class file
 *.class
 
