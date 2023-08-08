@@ -1,19 +1,21 @@
 package org.example;
 
+import org.apache.kafka.clients.producer.Callback;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerRecord;
+import org.apache.kafka.clients.producer.RecordMetadata;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Properties;
 
-public class KafkaProducerDemo {
+public class KafkaProducerDemoWithKeys {
 
-    private static final Logger log = LoggerFactory.getLogger(KafkaProducerDemo.class.getName());
+    private static final Logger log = LoggerFactory.getLogger(KafkaProducerDemoWithKeys.class.getName());
 
     public static void main(String[] args) {
-        log.info("Start Producer demo");
+        log.info("Start Producer demo with call back");
 
         //connect to conduktor playground
         Properties properties = new Properties();
@@ -27,14 +29,35 @@ public class KafkaProducerDemo {
         properties.setProperty("value.serializer", StringSerializer.class.getName());
 
 
+
+
         //create producer
         KafkaProducer<String,String> producer = new KafkaProducer(properties);
 
-        //create producer record
-        ProducerRecord<String,String> producerRecord = new ProducerRecord("demo_java_topic","Salam layane");
 
-        //send data
-        producer.send(producerRecord);
+
+        for (int i = 0; i < 10 ; i++) {
+
+            String topic = "demo_java_topic";
+            String key = "id_"+i;
+            String value = "value_"+i;
+            //create producer record
+            ProducerRecord<String,String> producerRecord = new ProducerRecord(topic,key,value);
+
+            //send data
+            producer.send(producerRecord, new Callback() {
+                @Override
+                public void onCompletion(RecordMetadata metadata, Exception e) {
+                    //Executes every time a record successfully set or an exception is thrown
+                    if(e == null){
+                        log.info("Key: "+key+"| Partition" +metadata.partition()+"\n");
+                    }else{
+                        log.error("Error while producing: "+e.getMessage());
+                    }
+                }
+            });
+        }
+
 
         //tell the producer to send data and block until done -- synchronous
         producer.flush();
