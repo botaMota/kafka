@@ -1,0 +1,40 @@
+#create spooldir directory
+mkdir spooldir
+cd spooldir
+
+#Download spooldir jar file
+curl 'https://d1i4a15mxbxib1.cloudfront.net/api/plugins/jcustenborder/kafka-connect-spooldir/versions/2.0.65/jcustenborder-kafka-connect-spooldir-2.0.65.zip'  > spooldir.zip
+
+#Unzip file
+apt-get install  unzip
+unzip spooldir.zip
+
+#Rename the unzipped file
+mv jcustenborder-kafka-connect-spooldir-2.0.65 kafka-connect-spooldir
+
+#Create 3 folders
+spooldir# mkdir data
+spooldir# mkdir error
+spooldir# mkdir finished
+
+#Downnload test file
+spooldir# cd data && curl "https://api.mockaroo.com/api/58605010?count=1000&key=25fd9c80" > "data/csv-spooldir-source.csv"
+tasks.max
+#Create spooldir.json file
+{
+  "name": "CsvSpoolDir",
+  "config": {
+    "tasks.max": "1",
+    "connector.class": "com.github.jcustenborder.kafka.connect.spooldir.SpoolDirCsvSourceConnector",
+    "input.path": "/path/to/data",
+    "input.file.pattern": "csv-spooldir-source.csv",
+    "error.path": "/path/to/error",
+    "finished.path": "/path/to/finished",
+    "halt.on.error": "false",
+    "topic": "spooldir-testing-topic",
+    "csv.first.row.as.header": "true",
+    "schema.generation.enabled": "true"
+  }
+}
+spooldir# touch spooldir.json
+

@@ -1,0 +1,2 @@
+#Read from kafka:
+kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic demo_java_topic --from-beginning
