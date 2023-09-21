@@ -1,0 +1,15 @@
+{
+  "name": "CsvSpoolDir",
+  "config": {
+    "tasks.max": "1",
+    "connector.class": "com.github.jcustenborder.kafka.connect.spooldir.SpoolDirCsvSourceConnector",
+    "input.path": "/usr/share/java/spooldir/data",
+    "input.file.pattern": "csv-spooldir-source.csv",
+    "error.path": "/usr/share/java/spooldir/error",
+    "finished.path": "/usr/share/java/spooldir/finished",
+    "halt.on.error": "false",
+    "topic": "spooldir-testing-topic",
+    "csv.first.row.as.header": "true",
+    "schema.generation.enabled": "true"
+  }
+}
