@@ -1,0 +1,6 @@
+FROM confluentinc/cp-zookeeper:7.3.0
+
+ENV ZOOKEEPER_CLIENT_PORT=2181 \
+    ZOOKEEPER_SERVER_ID=1 \
+    ZOOKEEPER_SERVERS="localhost:2888:3888"
+
