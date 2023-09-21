@@ -38,6 +38,7 @@ tasks.max
 }
 spooldir# touch spooldir.json
 
- docker run --name kafka-spooldir -e TZ=UTC -p 9092:9092 -e KAFKA_ZOOKEEPER_CONNECT=host.docker.internal -e KAFKA_LISTENER_SECURITY_PROTOCOL_MAP=INTERNAL:PLAINTEXT,EXTERNAL:PLAINTEXT,DOCKER:PLAINTEXT -e KAFKA_INTER_BROKER_LISTENER_NAME=INTERNAL   kafka-spooler
+docker run -d -p 2181:2181 --name zoo1 --network kafka-network my-zoo
+docker run --name kafka-spooldir --network kafka-network -e TZ=UTC -p 9092:9092 -e KAFKA_ZOOKEEPER_CONNECT=host.docker.internal -e KAFKA_LISTENER_SECURITY_PROTOCOL_MAP=INTERNAL:PLAINTEXT,EXTERNAL:PLAINTEXT,DOCKER:PLAINTEXT -e KAFKA_INTER_BROKER_LISTENER_NAME=INTERNAL   kafka-spooler
 
 
