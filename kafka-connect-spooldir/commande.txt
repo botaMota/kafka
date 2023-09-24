@@ -37,8 +37,35 @@ tasks.max
   }
 }
 spooldir# touch spooldir.json
-
+#Run zookeeper
 docker run -d -p 2181:2181 --name zoo1 --network kafka-network my-zoo
-docker run --name kafka-spooldir --network kafka-network -e TZ=UTC -p 9092:9092 -e KAFKA_ZOOKEEPER_CONNECT=host.docker.internal -e KAFKA_LISTENER_SECURITY_PROTOCOL_MAP=INTERNAL:PLAINTEXT,EXTERNAL:PLAINTEXT,DOCKER:PLAINTEXT -e KAFKA_INTER_BROKER_LISTENER_NAME=INTERNAL   kafka-spooler
+#Run kafka broker
+docker run \
+    --name kafka-spooldir \
+    --network kafka-network \
+    -p 9092:9092 \
+    kafka-sp
+#Run distributed connectors
+connect-distributed /etc/kafka/connect-distributed.properties
+
+#Check installed connectors
+docker exec -it kafka-spooldir bash
+curl -s localhost:8083/connector-plugins|jq '.[].class'
+
+
+curl -i -X PUT -H "Accept:application/json" \
+-H "Content-Type:application/json" http://localhost:8083/connectors/source-scv-spooldir-00/config \
+-d '{
+        "tasks.max": "1",
+        "connector.class": "com.github.jcustenborder.kafka.connect.spooldir.SpoolDirCsvSourceConnector",
+        "input.path": "/opt/connectors/data",
+        "input.file.pattern": "csv-spooldir-source.csv",
+        "error.path": "/opt/connectors/error",
+        "finished.path": "/opt/connectors/finished",
+        "halt.on.error": "false",
+        "topic": "spooldir-testing-topic",
+        "csv.first.row.as.header": "true",
+        "schema.generation.enabled": "true"
+      }'
 
 
